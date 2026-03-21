@@ -8,6 +8,10 @@ export async function searchVolunteerByCode(code: string): Promise<Volunteer> {
   return invokeRpc('searchVolunteerByCode', code);
 }
 
+export async function getVolunteersList(): Promise<Volunteer[]> {
+  return invokeRpc('getVolunteersList');
+}
+
 export async function getClosestVolunteersForCase(
   caseId: string,
   k?: number

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import VolunteerSearch from '../components/VolunteerSearch';
 import CaseSearch from '../components/CaseSearch';
-type Tab = 'volunteer' | 'case';
+import VolunteerTagFilter from '../components/VolunteerTagFilter';
+
+type Tab = 'volunteer' | 'case' | 'tags';
 
 function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>('volunteer');
@@ -29,6 +31,13 @@ function HomePage() {
         >
           Case Search
         </button>
+        <button
+          type="button"
+          className={`tab-button ${activeTab === 'tags' ? 'active' : ''}`}
+          onClick={() => switchTab('tags')}
+        >
+          Volunteer Tag Filter
+        </button>
       </div>
 
       <div
@@ -40,6 +49,10 @@ function HomePage() {
 
       <div id="case" className={`tab-content ${activeTab === 'case' ? 'active' : ''}`}>
         <CaseSearch />
+      </div>
+
+      <div id="tags" className={`tab-content ${activeTab === 'tags' ? 'active' : ''}`}>
+        <VolunteerTagFilter />
       </div>
     </div>
   );
