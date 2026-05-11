@@ -13,7 +13,7 @@ function CaseSearch() {
   const [loadingCaseData, setLoadingCaseData] = useState(false);
   const [closestVolunteers, setClosestVolunteers] = useState<ClosestVolunteersResponse>([]);
   const [error, setError] = useState<string | null>(null);
-
+  
   useEffect(() => {
     setLoadingCases(true);
     getCasesList()

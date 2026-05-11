@@ -7,10 +7,6 @@ type Tab = 'volunteer' | 'case' | 'availability';
 
 function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>('volunteer');
-  const isMockMode =
-    typeof (import.meta as { env?: { DEV?: boolean } }).env?.DEV !== 'undefined' &&
-    (import.meta as { env?: { DEV?: boolean } }).env?.DEV &&
-    typeof (window as { google?: { script?: { run?: unknown } } }).google?.script?.run === 'undefined';
 
   const switchTab = (tab: Tab) => {
     setActiveTab(tab);
@@ -18,21 +14,6 @@ function HomePage() {
 
   return (
     <div className="container">
-      {isMockMode && (
-        <div
-          style={{
-            padding: '8px 12px',
-            marginBottom: 16,
-            background: '#fff3cd',
-            border: '1px solid #ffc107',
-            borderRadius: 4,
-            fontSize: 14,
-          }}
-        >
-          <strong>Dev mode:</strong> Using mock data (GAS not available). Try R001, R002, or R003
-          for volunteer search.
-        </div>
-      )}
       <h2>Volunteer & Case Lookup</h2>
 
       <div className="tabs">

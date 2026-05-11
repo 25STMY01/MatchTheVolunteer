@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates TypeScript types from .xlsx files in mock_data/
+ * Generates TypeScript types from local .xlsx files (default: local_data/)
  * Run: yarn generate-types
  * Output: src/server/types/sheets.ts
  */
@@ -32,7 +32,7 @@ function main() {
   const caseData = parseXlsx(paths.case, ['SN']);
 
   const timestamp = new Date().toISOString();
-  const output = `// AUTO-GENERATED from mock_data/*.xlsx - do not edit manually
+  const output = `// AUTO-GENERATED from local .xlsx (yarn generate-types) - do not edit manually
 // Generated: ${timestamp}
 // Run: yarn generate-types
 

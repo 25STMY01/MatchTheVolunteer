@@ -11,14 +11,13 @@ import XLSX from 'xlsx';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
 
-const defaultVolunteer = join(rootDir, 'mock_data', '1. Volunteer Masterlist.xlsx');
-const defaultCase = join(rootDir, 'mock_data', 'Case Masterlist.xlsx');
+const defaultVolunteer = join(rootDir, 'local_data', '1. Volunteer Masterlist.xlsx');
+const defaultCase = join(rootDir, 'local_data', 'Case Masterlist.xlsx');
 
 export const paths = {
   volunteer: process.env.VOLUNTEER_XLSX_PATH || defaultVolunteer,
   case: process.env.CASE_XLSX_PATH || defaultCase,
   sheetsTs: join(rootDir, 'src', 'server', 'types', 'sheets.ts'),
-  mockGenerated: join(rootDir, 'src', 'client', 'api', 'mockData.generated.ts'),
 };
 
 export function findHeaderRowIndex(data, identifierColumns = ['Code Number', 'SN']) {
@@ -50,12 +49,12 @@ export function parseXlsx(filePath, identifierColumns = ['Code Number', 'SN']) {
 export function ensureXlsxFilesExist() {
   if (!existsSync(paths.volunteer)) {
     console.error(`Error: Volunteer xlsx not found at ${paths.volunteer}`);
-    console.error('Please add mock_data/1. Volunteer Masterlist.xlsx');
+    console.error('Please add local_data/1. Volunteer Masterlist.xlsx');
     process.exit(1);
   }
   if (!existsSync(paths.case)) {
     console.error(`Error: Case xlsx not found at ${paths.case}`);
-    console.error('Please add mock_data/Case Masterlist.xlsx');
+    console.error('Please add local_data/Case Masterlist.xlsx');
     process.exit(1);
   }
 }

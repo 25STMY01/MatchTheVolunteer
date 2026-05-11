@@ -4,6 +4,8 @@
  */
 
 import type { Row } from '../../types/sheets';
+import { CaseRepository } from './CaseRepository';
+import { VolunteerRepository } from './VolunteerRepository';
 
 export function getValueByHeaderMatch(
   row: Row,
@@ -33,4 +35,9 @@ export function rowToObject<T extends Row>(
     obj[h] = row[i] ?? '';
   });
   return obj as T;
+}
+
+export function initAllRepositories(forceNew: boolean = false): void {
+  CaseRepository.getCaseRepository(forceNew);
+  VolunteerRepository.getVolunteerRepository(forceNew);
 }

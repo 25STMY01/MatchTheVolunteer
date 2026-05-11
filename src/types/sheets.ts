@@ -1,4 +1,4 @@
-// AUTO-GENERATED from mock_data/*.xlsx - do not edit manually
+// AUTO-GENERATED from local .xlsx (yarn generate-types) - do not edit manually
 // Generated: 2026-02-23T12:47:10.352Z
 // Run: yarn generate-types
 

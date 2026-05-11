@@ -1,15 +1,15 @@
 # Client (React)
 
-React app that runs in the browser. When deployed, it is served by Google Apps Script (`doGet` → `match-the-volunteer.html`). When GAS is available, it calls server functions via `gas-client`; otherwise it uses mock data for local development.
+React app that runs in the browser. When deployed, it is served by Google Apps Script (`doGet` → `match-the-volunteer.html`) and calls server functions through `gas-client`.
 
 ## Structure
 
 ```
 src/client/
 ├── api/
-│   ├── index.ts           # API layer: GAS or mock
-│   ├── mockData.ts        # Mock implementations (uses mockData.generated)
-│   └── mockData.generated.ts  # Generated from mock_data/*.xlsx (yarn generate-mock)
+│   ├── index.ts           # gas-client → serverFunctions
+│   ├── volunteer.ts       # searchVolunteerByCode, getClosestVolunteersForCase
+│   └── case.ts            # getCasesList
 ├── components/
 │   ├── VolunteerSearch.tsx   # Search by volunteer code
 │   └── CaseSearch.tsx         # Select case, show biodata + closest volunteers
@@ -23,30 +23,20 @@ src/client/
 
 ## API layer
 
-`api/index.ts` uses `gas-client` to call server functions when `google.script.run` is available (inside GAS). Otherwise it falls back to mock functions for local dev.
+`api/index.ts` configures `GASClient` and re-exports `serverFunctions`. `volunteer.ts` and `case.ts` wrap those calls for the UI.
 
-
-| Function                              | Returns                     | Server / Mock                                                                     |
-| ------------------------------------- | --------------------------- | --------------------------------------------------------------------------------- |
-| `searchVolunteerByCode(code)`         | `Volunteer` or throws       | `serverFunctions.searchVolunteerByCode` / `mockSearchVolunteerByCode`             |
-| `getCasesList()`                      | `Case[]`                    | `serverFunctions.getCasesList` / `mockGetCasesList`                               |
-| `getClosestVolunteersForCase(caseId)` | `ClosestVolunteersResponse` | `serverFunctions.getClosestVolunteersForCase` / `mockGetClosestVolunteersForCase` |
-
+| Function                              | Returns                     | Server                                              |
+| ------------------------------------- | --------------------------- | --------------------------------------------------- |
+| `searchVolunteerByCode(code)`         | `Volunteer` or throws       | `serverFunctions.searchVolunteerByCode`             |
+| `getCasesList()`                      | `Case[]`                    | `serverFunctions.getCasesList`                      |
+| `getClosestVolunteersForCase(caseId)` | `ClosestVolunteersResponse` | `serverFunctions.getClosestVolunteersForCase`       |
 
 ## Components
-
 
 | Component           | Pattern                                         | Data flow                                                                                                                             |
 | ------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **VolunteerSearch** | Search by code. User types code, clicks Search. | Fetches one volunteer on demand.                                                                                                      |
 | **CaseSearch**      | Select from dropdown. User picks case.          | Loads all cases for dropdown; fetches closest volunteers when a case is selected. Case biodata comes from the selected case in state. |
-
-
-## Mock data
-
-- `mockData.generated.ts` is produced by `yarn generate-mock` from `mock_data/*.xlsx`.
-- `mockData.ts` implements the three mock functions using that data.
-- `mockData.generated.ts` is gitignored; run `yarn generate-mock` after cloning if you need local dev without GAS.
 
 ## Build
 

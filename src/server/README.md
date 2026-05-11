@@ -1,6 +1,6 @@
 # Server (Google Apps Script)
 
-Backend code that runs on Google's servers. Handles spreadsheet access, volunteer/case lookups, and distance calculations via the Google Maps Distance Matrix API.
+Backend code that runs on Google's servers. Handles spreadsheet access, volunteer/case lookups, and distance calculations via the Google Maps **Routes API** (`computeRoutes`).
 
 ## Layer overview
 
@@ -9,8 +9,8 @@ Backend code that runs on Google's servers. Handles spreadsheet access, voluntee
 | ---------------- | ------------------------------------------------------------------------------------------------------ |
 | **Handlers**     | Entry points for client calls. Validate input, orchestrate repos and matching, return typed results.   |
 | **Repositories** | Data access. Open spreadsheets, parse rows, map to domain types (Case, Volunteer).                     |
-| **Matching**     | Matching logic. Uses Google Maps Distance Matrix API to find k-nearest volunteers by driving distance. |
-| **External**     | Outbound HTTP (Google Maps API). Reads `GOOGLE_MAPS_API_KEY` from Script Properties.                   |
+| **Matching**     | Matching logic. Uses Routes API driving distance to find k-nearest volunteers.                        |
+| **External**     | Outbound HTTP (Routes API). Reads `GOOGLE_MAPS_API_KEY` from Script Properties.                       |
 | **Utils**        | Shared helpers (sheets, header matching).                                                              |
 
 
@@ -25,8 +25,8 @@ Backend code that runs on Google's servers. Handles spreadsheet access, voluntee
 | `handlers/volunteer.ts`             | `searchVolunteerByCode(code)` → Volunteer; `getClosestVolunteersForCase(caseId, k)` → ClosestVolunteersResponse   |
 | `repository/CaseRepository.ts`      | Opens case spreadsheet, finds header row by "SN", maps rows to Case.                                              |
 | `repository/VolunteerRepository.ts` | Opens volunteer spreadsheet, finds header row by "Code Number", maps rows to Volunteer.                           |
-| `matching/location.ts`              | Calls `calculateDistance()` for each volunteer with location; sorts by distance; returns top k with `distanceKm`. |
-| `external/googleMaps.ts`            | Distance Matrix API client. Returns km or `{ error }`.                                                            |
+| `matching/location.ts`              | Calls `computeRouteMatrix` (batched) for driving distances; sorts; returns top k with `distanceKm`. |
+| `external/googleMaps.ts`            | Routes API `computeRouteMatrix` client (Route Matrix). Batched km by row or `{ error }`.                             |
 
 
 ## Build

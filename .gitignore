@@ -18,7 +18,6 @@ dist/
 #secret
 .env
 
-# Mock data and Excel sources
-mock_data/
+# Local Excel sources for yarn generate-types (optional)
+local_data/
 *.xlsx
-src/client/api/mockData.generated.ts

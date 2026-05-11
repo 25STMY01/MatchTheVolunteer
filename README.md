@@ -1,6 +1,6 @@
 # Match The Volunteer
 
-Volunteer and Case lookup app built with React and Google Apps Script. Reads from two Google Spreadsheets (Volunteer Masterlist and Cases) and finds the closest volunteers to a case using the Google Maps Distance Matrix API.
+Volunteer and Case lookup app built with React and Google Apps Script. Reads from two Google Spreadsheets (Volunteer Masterlist and Cases) and finds the closest volunteers to a case using the Google Maps Routes API.
 
 ## Prerequisites
 
@@ -57,15 +57,9 @@ TODO: Make it able to connect to sheets and map during local dev
    - Make a copy of the volunteer and cases masterlist. For better accuracy run the fake name generator script
    - Replace the values of ```VOLUNTEER_SHEET_URL``` and ```CASE_SHEET_URL``` with the urls fo ur copies
 
-2. **Download the Cases and Volunteer Masterlist, and place them under ```/mock_data```**
-   - You will need to create a folder called ```/mock_data``` under project root  
-   (i.e. directly under ```/MatchTheVolunteer```)
+2. **(Optional)** To regenerate server sheet types from exported spreadsheets, put the Volunteer and Case masterlists under ```/local_data``` and run ```yarn generate-types```.
 
-3. **Run ```yarn generate-mock``` to generate mock data for testing from the sheets.**
-   If the data changes, run the command again to generate fresh mock data  
-   - TODO: Make it read the data directly from the downloaded sheets instead of generating the mockdata file. This will let us test our server functions 
-
-4. **Run ```yarn dev```, web app should be available at http://localhost:3000/**
+3. **Run ```yarn dev```** — the UI is at http://localhost:3000/, but lookups need the app **deployed** to GAS (the client calls `google.script.run`; there is no local data fallback).
 
 
 ## Pushing to GAS
@@ -79,7 +73,7 @@ TODO: Make it able to connect to sheets and map during local dev
      - `CASE_SHEET_URL` – Case spreadsheet URL
      - `VOLUNTEER_SHEET_NAME` – e.g. `Volunteer Masterlist`
      - `CASE_SHEET_NAME` – e.g. `Cases`
-     - `GOOGLE_MAPS_API_KEY` – Your Google Maps API key
+     - `GOOGLE_MAPS_API_KEY` – API key with **Routes API** enabled on the Google Cloud project (billing on)
 
 3. **Deploy**
    From the GAS editor: **Deploy** → **New deployment** → **Web app**

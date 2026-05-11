@@ -1,6 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { resolve } from 'path';
-import { BuildOptions, ServerOptions, build, defineConfig } from 'vite';
+import {
+  BuildOptions,
+  ServerOptions,
+  build,
+  defineConfig,
+  loadEnv,
+  type Plugin,
+} from 'vite';
 import { existsSync, readFileSync } from 'fs';
 import react from '@vitejs/plugin-react-swc';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -48,10 +55,19 @@ if (existsSync(pfxPath)) {
   };
 }
 
-const clientServeConfig = () =>
+const clientServeConfig = (localApiPort: number) =>
   defineConfig({
     plugins: [react()],
-    server: devServerOptions,
+    server: {
+      ...devServerOptions,
+      proxy: {
+        '/api/rpc': {
+          target: `http://127.0.0.1:${localApiPort}`,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+    },
     root: resolve(__dirname, clientRoot),
   });
 
@@ -79,6 +95,38 @@ const clientBuildConfig = ({
 
 /** IIFE arg that creates exports on the real global - avoids `this` being undefined in GAS */
 const GAS_EXPORTS_ARG = `(function(){var g=typeof globalThis!=="undefined"?globalThis:typeof self!=="undefined"?self:this;g.__gasExports=g.__gasExports||{};return g.__gasExports;}())`;
+
+/** GAS bundle must not include `xlsx` / Node fs — swap local readers for throw-only stubs. */
+function stubLocalXlsxReadersForGasBundle(): Plugin {
+  const caseStub = resolve(
+    __dirname,
+    'src/server/repository/mock/readCaseSheetFromLocalXlsx.stub.ts'
+  );
+  const volunteerStub = resolve(
+    __dirname,
+    'src/server/repository/mock/readVolunteerSheetFromLocalXlsx.stub.ts'
+  );
+  return {
+    name: 'mtv-stub-local-xlsx-for-gas',
+    enforce: 'pre',
+    resolveId(id) {
+      const normalized = id.replace(/\\/g, '/');
+      if (
+        normalized.includes('readCaseSheetFromLocalXlsx') &&
+        !normalized.includes('readCaseSheetFromLocalXlsx.stub')
+      ) {
+        return caseStub;
+      }
+      if (
+        normalized.includes('readVolunteerSheetFromLocalXlsx') &&
+        !normalized.includes('readVolunteerSheetFromLocalXlsx.stub')
+      ) {
+        return volunteerStub;
+      }
+      return undefined;
+    },
+  };
+}
 
 const serverBuildConfig: BuildOptions = {
   emptyOutDir: true,
@@ -141,6 +189,7 @@ const buildConfig = ({ mode }: { mode: string }) => {
   }
   return defineConfig({
     plugins: [
+      stubLocalXlsxReadersForGasBundle(),
       viteStaticCopy({
         targets,
       }),
@@ -172,7 +221,9 @@ const buildConfig = ({ mode }: { mode: string }) => {
 // https://vitejs.dev/config/
 export default async ({ command, mode }: { command: string; mode: string }) => {
   if (command === 'serve') {
-    return clientServeConfig();
+    const env = loadEnv(mode, process.cwd(), '');
+    const localApiPort = Number(env.MTV_LOCAL_API_PORT) || 3001;
+    return clientServeConfig(localApiPort);
   }
   if (command === 'build') {
     return buildConfig({ mode });
