@@ -1,8 +1,13 @@
-
 import { ClosestVolunteersResponse, Volunteer } from '../../types/volunteer';
+import { AvailabilitiesFilter, FilterMode } from '../../types/availabilities';
 import { findClosestVolunteers } from '../matching/location';
-import { VolunteerRepository } from "../repository/VolunteerRepository";
-import { CaseRepository } from "../repository/CaseRepository";
+import { filterVolunteersByAvailabilities } from '../matching/availabilities';
+import { VolunteerRepository } from '../repository/VolunteerRepository';
+import { CaseRepository } from '../repository/CaseRepository';
+
+export function getAvailabilitySlots(): string[] {
+  return VolunteerRepository.getVolunteerRepository().getAvailabilitySlots();
+}
 
 export function searchVolunteerByCode(code: string): Volunteer {
   const repository = VolunteerRepository.getVolunteerRepository();
@@ -13,10 +18,11 @@ export function searchVolunteerByCode(code: string): Volunteer {
   return volunteer;
 }
 
-export async function getClosestVolunteersForCase(
+export async function getMatchingVolunteersForCase(
   caseRowId: string,
   filters: AvailabilitiesFilter[] = [],
-  k = 5
+  k = 5,
+  filterMode: FilterMode = 'OR'
 ): Promise<ClosestVolunteersResponse> {
   try {
     const rowIndex = parseInt(caseRowId, 10);
@@ -24,26 +30,20 @@ export async function getClosestVolunteersForCase(
       throw new Error('Invalid caseRowId');
     }
 
-    const caseRepository = CaseRepository.getCaseRepository();
-    const caseObj = caseRepository.findByRowIndex(rowIndex);
-
+    const caseObj = CaseRepository.getCaseRepository().findByRowIndex(rowIndex);
     if (!caseObj) {
       throw new Error(`Case row not found for id: ${caseRowId}`);
     }
 
-    const volunteerRepository = VolunteerRepository.getVolunteerRepository();
-    const volunteers = volunteerRepository.getAll();
+    let volunteers = VolunteerRepository.getVolunteerRepository().getAll();
+    if (filters.length > 0) {
+      volunteers = filterVolunteersByAvailabilities(volunteers, filters, filterMode);
+    }
 
-    const closestVolunteers = await findClosestVolunteers(
-      caseObj,
-      volunteers,
-      k
-    );
-
-    return closestVolunteers;
+    return findClosestVolunteers(caseObj, volunteers, k);
   } catch (error) {
     throw new Error(
-      `Error finding closest volunteers: ${(error as Error).toString()}`
+      `Error finding matching volunteers: ${(error as Error).toString()}`
     );
   }
 }

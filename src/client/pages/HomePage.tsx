@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import VolunteerSearch from '../components/VolunteerSearch';
 import CaseSearch from '../components/CaseSearch';
-import AvailabilitySearch from '../components/AvailabilitySearch';
 
-type Tab = 'volunteer' | 'case' | 'availability';
+type Tab = 'volunteer' | 'case';
 
 function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>('volunteer');
-
-  const switchTab = (tab: Tab) => {
-    setActiveTab(tab);
-  };
 
   return (
     <div className="container">
@@ -20,23 +15,16 @@ function HomePage() {
         <button
           type="button"
           className={`tab-button ${activeTab === 'volunteer' ? 'active' : ''}`}
-          onClick={() => switchTab('volunteer')}
+          onClick={() => setActiveTab('volunteer')}
         >
           Volunteer Search
         </button>
         <button
           type="button"
           className={`tab-button ${activeTab === 'case' ? 'active' : ''}`}
-          onClick={() => switchTab('case')}
+          onClick={() => setActiveTab('case')}
         >
           Case Search
-        </button>
-        <button
-          type="button"
-          className={`tab-button ${activeTab === 'availability' ? 'active' : ''}`}
-          onClick={() => switchTab('availability')}
-        >
-          Availability Search
         </button>
       </div>
 
@@ -46,10 +34,6 @@ function HomePage() {
 
       <div id="case" className={`tab-content ${activeTab === 'case' ? 'active' : ''}`}>
         <CaseSearch />
-      </div>
-
-      <div id="availability" className={`tab-content ${activeTab === 'availability' ? 'active' : ''}`}>
-        <AvailabilitySearch />
       </div>
     </div>
   );

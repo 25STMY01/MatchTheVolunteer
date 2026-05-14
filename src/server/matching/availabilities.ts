@@ -1,17 +1,17 @@
-import { Volunteer, AvailabilitiesFilter } from "../../types/volunteer";
+import { Volunteer } from "../../types/volunteer";
+import { AvailabilitiesFilter, FilterMode } from "../../types/availabilities";
 
 export function filterVolunteersByAvailabilities(
     volunteers: Volunteer[],
-    filters: AvailabilitiesFilter[]
+    filters: AvailabilitiesFilter[],
+    mode: FilterMode = 'OR'
 ): Volunteer[] {
   if (!filters.length) return volunteers;
 
-  return volunteers.filter(volunteer => {
-    const pass = filters.every(({ day, timeSlot }) => {
-      const slots = volunteer.availabilities[day];
-      console.log(`checking ${volunteer.code} | ${day} ${timeSlot} | slots:`, slots);
-      return slots?.includes(timeSlot);
-    });
-    return pass;
-  });
+  const check = mode === 'AND' ? filters.every.bind(filters) : filters.some.bind(filters);
+  return volunteers.filter(volunteer =>
+    check(({ day, timeSlot }: AvailabilitiesFilter) =>
+      volunteer.availabilities[day]?.includes(timeSlot)
+    )
+  );
 }

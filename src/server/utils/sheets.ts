@@ -32,7 +32,7 @@ export function findHeaderRowIndex(
       data: unknown[][],
       identifierColumns: string[] = ['Code Number', 'SN']
     ): number {
-      for (let r = 0; r < Math.min(5, data.length); r++) {
+      for (let r = 0; r < Math.min(30, data.length); r++) {
         const row = data[r] as unknown[];
         for (let c = 0; c < row.length; c++) {
           const cell = row[c] ? (row[c] as object).toString() : '';
