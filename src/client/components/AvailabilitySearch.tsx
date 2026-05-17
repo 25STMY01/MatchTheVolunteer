@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { DAYS } from '../../types/availabilities';
 import type { AvailabilitiesFilter, AvailabilityQuery, FilterMode } from '../../types/availabilities';
 import { getAvailabilitySlots } from '../api/volunteer';
@@ -7,26 +7,39 @@ interface Props {
   onSave: (query: AvailabilityQuery) => void;
 }
 
+type SlotSelection = Record<string, Record<string, boolean>>;
+
+function initSelectedSlots(slots: string[]): SlotSelection {
+  const init: SlotSelection = {};
+  for (const day of DAYS) {
+    init[day] = {};
+    for (const slot of slots) {
+      init[day][slot] = false;
+    }
+  }
+  return init;
+}
+
+function getButtonLabel(loading: boolean, loadError: string | null, open: boolean, selectedCount: number): string {
+  if (loading) return 'Loading availability...';
+  if (loadError) return 'Availability unavailable';
+  if (open) return 'Close';
+  return `Filter by Availability${selectedCount > 0 ? ` (${selectedCount} selected)` : ''}`;
+}
+
 function AvailabilitySearch({ onSave }: Props) {
   const [open, setOpen] = useState(false);
   const [slots, setSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [selectedSlots, setSelectedSlots] = useState<Record<string, Record<string, boolean>>>({});
+  const [selectedSlots, setSelectedSlots] = useState<SlotSelection>({});
   const [mode, setMode] = useState<FilterMode>('OR');
 
   useEffect(() => {
     getAvailabilitySlots()
       .then((discovered) => {
         setSlots(discovered);
-        const init: Record<string, Record<string, boolean>> = {};
-        for (const day of DAYS) {
-          init[day] = {};
-          for (const slot of discovered) {
-            init[day][slot] = false;
-          }
-        }
-        setSelectedSlots(init);
+        setSelectedSlots(initSelectedSlots(discovered));
         setLoading(false);
       })
       .catch((err: Error) => {
@@ -50,7 +63,7 @@ function AvailabilitySearch({ onSave }: Props) {
     }));
   };
 
-  const buildFilters = (): AvailabilitiesFilter[] => {
+  const activeFilters = useMemo((): AvailabilitiesFilter[] => {
     const filters: AvailabilitiesFilter[] = [];
     for (const day of DAYS) {
       for (const slot of slots) {
@@ -60,27 +73,18 @@ function AvailabilitySearch({ onSave }: Props) {
       }
     }
     return filters;
-  };
+  }, [selectedSlots, slots]);
 
   const handleSave = () => {
-    onSave({ filters: buildFilters(), mode });
+    onSave({ filters: activeFilters, mode });
     setOpen(false);
   };
 
   const handleClear = () => {
-    const reset: Record<string, Record<string, boolean>> = {};
-    for (const day of DAYS) {
-      reset[day] = {};
-      for (const slot of slots) {
-        reset[day][slot] = false;
-      }
-    }
-    setSelectedSlots(reset);
+    setSelectedSlots(initSelectedSlots(slots));
     onSave({ filters: [], mode });
     setOpen(false);
   };
-
-  const selectedCount = buildFilters().length;
 
   return (
     <div style={{ marginBottom: 12 }}>
@@ -90,13 +94,7 @@ function AvailabilitySearch({ onSave }: Props) {
         disabled={loading || !!loadError}
         style={{ background: '#607d8b', marginBottom: 0 }}
       >
-        {loading
-          ? 'Loading availability...'
-          : loadError
-          ? 'Availability unavailable'
-          : open
-          ? 'Close'
-          : `Filter by Availability${selectedCount > 0 ? ` (${selectedCount} selected)` : ''}`}
+        {getButtonLabel(loading, loadError, open, activeFilters.length)}
       </button>
 
       {open && !loading && !loadError && (

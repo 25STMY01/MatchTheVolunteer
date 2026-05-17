@@ -34,10 +34,10 @@ export async function getMatchingVolunteersForCase(
       throw new Error(`Case row not found for id: ${caseRowId}`);
     }
 
-    let volunteers = VolunteerRepository.getVolunteerRepository().getAll();
-    if (availabilityFilters.filters.length > 0) {
-      volunteers = filterVolunteersByAvailabilities(volunteers, availabilityFilters.filters, availabilityFilters.mode);
-    }
+    const volunteers = filterVolunteersByAvailabilities(
+      VolunteerRepository.getVolunteerRepository().getAll(),
+      availabilityFilters
+    );
 
     return findClosestVolunteers(caseObj, volunteers, k);
   } catch (error) {
