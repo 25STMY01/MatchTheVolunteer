@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { DAYS } from '../../types/availabilities';
-import type { AvailabilitiesFilter, FilterMode } from '../../types/availabilities';
+import type { AvailabilitiesFilter, AvailabilityQuery, FilterMode } from '../../types/availabilities';
 import { getAvailabilitySlots } from '../api/volunteer';
 
 interface Props {
-  onSave: (filters: AvailabilitiesFilter[], mode: FilterMode) => void;
+  onSave: (query: AvailabilityQuery) => void;
 }
 
 function AvailabilitySearch({ onSave }: Props) {
@@ -63,7 +63,7 @@ function AvailabilitySearch({ onSave }: Props) {
   };
 
   const handleSave = () => {
-    onSave(buildFilters(), mode);
+    onSave({ filters: buildFilters(), mode });
     setOpen(false);
   };
 
@@ -76,7 +76,8 @@ function AvailabilitySearch({ onSave }: Props) {
       }
     }
     setSelectedSlots(reset);
-    onSave([], mode);
+    onSave({ filters: [], mode });
+    setOpen(false);
   };
 
   const selectedCount = buildFilters().length;
@@ -145,7 +146,7 @@ function AvailabilitySearch({ onSave }: Props) {
             </button>
             <button
               type="button"
-              onClick={() => setMode((m) => (m === 'OR' ? 'AND' : 'OR'))}
+              onClick={() => setMode((m: FilterMode) => (m === 'OR' ? 'AND' : 'OR'))}
               style={{ flex: 0, minWidth: 90, whiteSpace: 'nowrap', background: mode === 'AND' ? '#455a64' : '#78909c' }}
               title={mode === 'OR' ? 'Currently: match any selected slot' : 'Currently: match all selected slots'}
             >

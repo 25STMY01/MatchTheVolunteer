@@ -1,6 +1,7 @@
 import { CONFIG } from '../config';
 import { DAY_HEADER_MAP, VOLUNTEER_HEADER_MAP, type Volunteer } from '../../types/volunteer';
 import { DAYS, type Availabilities } from '../../types/availabilities';
+import { safeLog } from '../utils/misc';
 import type { VolunteerRow } from '../../types/sheets';
 import { getValueByHeaderMatch, rowToObject } from './utils';
 import {
@@ -149,17 +150,11 @@ export class VolunteerRepository {
 
   getAvailabilitySlots(): string[] {
     const seen = new Set<string>();
-    for (const row of this.data) {
+    for (const vol of this.getAll()) {
       for (const day of DAYS) {
-        const val = getValueByHeaderMatch(row, DAY_HEADER_MAP[day]);
-        if (val) {
-          for (const raw of val.split(',')) {
-            const slot = normalizeSlot(raw.trim());
-            if (slot) {
-              if (!/^[A-Za-z]/.test(slot)) console.warn('[slots] unexpected slot:', JSON.stringify(slot), 'raw:', JSON.stringify(raw), 'val:', JSON.stringify(val));
-              seen.add(slot);
-            }
-          }
+        for (const slot of vol.availabilities[day] ?? []) {
+          if (!/^[A-Za-z]/.test(slot)) safeLog(`[slots] unexpected slot: ${JSON.stringify(slot)}`);
+          seen.add(slot);
         }
       }
     }

@@ -1,6 +1,6 @@
 import { invokeRpc } from './transport';
 import type { ClosestVolunteersResponse, Volunteer } from '../../types/volunteer';
-import type { AvailabilitiesFilter, FilterMode } from '../../types/availabilities';
+import type { AvailabilityQuery } from '../../types/availabilities';
 
 export async function getAvailabilitySlots(): Promise<string[]> {
   return invokeRpc('getAvailabilitySlots');
@@ -12,9 +12,8 @@ export async function searchVolunteerByCode(code: string): Promise<Volunteer> {
 
 export async function getMatchingVolunteersForCase(
   caseId: string,
-  filters: AvailabilitiesFilter[] = [],
-  filterMode: FilterMode = 'OR',
+  availabilityFilters: AvailabilityQuery = { filters: [], mode: 'OR' },
   k?: number
 ): Promise<ClosestVolunteersResponse> {
-  return invokeRpc('getMatchingVolunteersForCase', caseId, filters, k ?? 5, filterMode);
+  return invokeRpc('getMatchingVolunteersForCase', caseId, availabilityFilters, k ?? 5);
 }

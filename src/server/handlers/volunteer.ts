@@ -1,5 +1,5 @@
 import { ClosestVolunteersResponse, Volunteer } from '../../types/volunteer';
-import { AvailabilitiesFilter, FilterMode } from '../../types/availabilities';
+import { AvailabilityQuery } from '../../types/availabilities';
 import { findClosestVolunteers } from '../matching/location';
 import { filterVolunteersByAvailabilities } from '../matching/availabilities';
 import { VolunteerRepository } from '../repository/VolunteerRepository';
@@ -20,9 +20,8 @@ export function searchVolunteerByCode(code: string): Volunteer {
 
 export async function getMatchingVolunteersForCase(
   caseRowId: string,
-  filters: AvailabilitiesFilter[] = [],
-  k = 5,
-  filterMode: FilterMode = 'OR'
+  availabilityFilters: AvailabilityQuery = { filters: [], mode: 'OR' },
+  k = 5
 ): Promise<ClosestVolunteersResponse> {
   try {
     const rowIndex = parseInt(caseRowId, 10);
@@ -36,8 +35,8 @@ export async function getMatchingVolunteersForCase(
     }
 
     let volunteers = VolunteerRepository.getVolunteerRepository().getAll();
-    if (filters.length > 0) {
-      volunteers = filterVolunteersByAvailabilities(volunteers, filters, filterMode);
+    if (availabilityFilters.filters.length > 0) {
+      volunteers = filterVolunteersByAvailabilities(volunteers, availabilityFilters.filters, availabilityFilters.mode);
     }
 
     return findClosestVolunteers(caseObj, volunteers, k);

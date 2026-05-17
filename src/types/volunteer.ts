@@ -4,7 +4,8 @@
  * Day columns (Monday–Sunday) are converted to availabilities map.
  */
 
-export type { Availabilities, AvailabilitiesFilter, DAYS } from './availabilities';
+export type { Availabilities, AvailabilitiesFilter } from './availabilities';
+export { DAYS } from './availabilities';
 import type { Availabilities } from './availabilities';
 import { DAYS } from './availabilities';
 
