@@ -1,10 +1,7 @@
 import { CONFIG } from '../config';
-import {
-  DAY_HEADER_MAP,
-  DAYS,
-  VOLUNTEER_HEADER_MAP,
-  type Volunteer,
-} from '../../types/volunteer';
+import { DAY_HEADER_MAP, VOLUNTEER_HEADER_MAP, type Volunteer } from '../../types/volunteer';
+import { DAYS, type Availabilities } from '../../types/availabilities';
+import { safeLog } from '../utils/misc';
 import type { VolunteerRow } from '../../types/sheets';
 import { getValueByHeaderMatch, rowToObject } from './utils';
 import {
@@ -15,12 +12,20 @@ import {
 } from '../utils/sheets';
 import { readVolunteerRowsFromLocalVolunteerXlsx } from './mock/readVolunteerSheetFromLocalXlsx';
 
-function buildAvailabilities(row: VolunteerRow): Record<string, boolean> {
-  return DAYS.reduce<Record<string, boolean>>((acc, day) => {
+function normalizeSlot(raw: string): string {
+  const ascii = raw.replace(/[^\x00-\x7F]/g, '').replace(/\s+/g, ' ').trim();
+  return /^[A-Za-z]/.test(ascii) ? ascii : '';
+}
+
+function buildAvailabilities(row: VolunteerRow): Availabilities {
+  const availabilities: Availabilities = {};
+  for (const day of DAYS) {
     const val = getValueByHeaderMatch(row, DAY_HEADER_MAP[day]);
-    acc[day] = val.length > 0;
-    return acc;
-  }, {});
+    availabilities[day] = val
+      ? val.split(',').map((s) => normalizeSlot(s.trim())).filter(Boolean)
+      : [];
+  }
+  return availabilities;
 }
 
 function volunteerRowToVolunteer(row: VolunteerRow): Volunteer {
@@ -141,5 +146,18 @@ export class VolunteerRepository {
     return this.data
       .filter((row) => getValueByHeaderMatch(row, VOLUNTEER_HEADER_MAP.code))
       .map(volunteerRowToVolunteer);
+  }
+
+  getAvailabilitySlots(): string[] {
+    const seen = new Set<string>();
+    for (const vol of this.getAll()) {
+      for (const day of DAYS) {
+        for (const slot of vol.availabilities[day] ?? []) {
+          if (!/^[A-Za-z]/.test(slot)) safeLog(`[slots] unexpected slot: ${JSON.stringify(slot)}`);
+          seen.add(slot);
+        }
+      }
+    }
+    return Array.from(seen);
   }
 }

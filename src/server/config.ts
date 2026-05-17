@@ -11,7 +11,7 @@ export function getScriptProperty(key: string): string | null {
     return PropertiesService.getScriptProperties().getProperty(key);
   }
   return typeof process !== 'undefined' && process.env
-    ? process.env[key] ?? null
+    ? process.env[key] || null
     : null;
 }
 

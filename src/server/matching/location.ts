@@ -26,7 +26,7 @@ export async function findClosestVolunteers(
   );
 
   if (isMatrixError(matrixResult)) {
-    return [];
+    return volunteerOptions.slice(0, k).map((volunteer) => ({ volunteer, distanceKm: 0 }));
   }
 
   const candidates: VolunteerWithDistance[] = [];

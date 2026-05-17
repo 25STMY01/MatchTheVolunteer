@@ -3,9 +3,11 @@
  * Mapping from sheet headers (VolunteerRow) is done in the repository layer.
  * Day columns (Monday–Sunday) are converted to availabilities map.
  */
-export type Availabilities = Record<string, boolean>;
 
-export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+export type { Availabilities, AvailabilitiesFilter } from './availabilities';
+export { DAYS } from './availabilities';
+import type { Availabilities } from './availabilities';
+import { DAYS } from './availabilities';
 
 /** Maps day name to sheet header search terms (for flexible column matching) */
 export const DAY_HEADER_MAP: Record<(typeof DAYS)[number], string[]> = {
@@ -53,7 +55,6 @@ export interface Volunteer {
   lostSomeoneRecent: string;
   employmentStatus: string;
 
-  /** Day name -> available (true if any time slot filled for that day) */
   availabilities: Availabilities;
 
   appliesToMe: string;
