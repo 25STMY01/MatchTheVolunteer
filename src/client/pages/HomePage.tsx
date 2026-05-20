@@ -30,7 +30,7 @@ function HomePage() {
         <button
           type="button"
           className={`tab-button ${activeTab === 'tags' ? 'active' : ''}`}
-          onClick={() => switchTab('tags')}
+          onClick={() => setActiveTab('tags')}
         >
           Volunteer Tag Filter
         </button>
