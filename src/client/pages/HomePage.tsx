@@ -8,10 +8,6 @@ type Tab = 'volunteer' | 'case' | 'tags';
 function HomePage() {
   const [activeTab, setActiveTab] = useState<Tab>('volunteer');
 
-  const switchTab = (tab: Tab) => {
-    setActiveTab(tab);
-  };
-
   return (
     <div className="container">
       <h2>Volunteer & Case Lookup</h2>
@@ -20,14 +16,14 @@ function HomePage() {
         <button
           type="button"
           className={`tab-button ${activeTab === 'volunteer' ? 'active' : ''}`}
-          onClick={() => switchTab('volunteer')}
+          onClick={() => setActiveTab('volunteer')}
         >
           Volunteer Search
         </button>
         <button
           type="button"
           className={`tab-button ${activeTab === 'case' ? 'active' : ''}`}
-          onClick={() => switchTab('case')}
+          onClick={() => setActiveTab('case')}
         >
           Case Search
         </button>
@@ -40,10 +36,7 @@ function HomePage() {
         </button>
       </div>
 
-      <div
-        id="volunteer"
-        className={`tab-content ${activeTab === 'volunteer' ? 'active' : ''}`}
-      >
+      <div id="volunteer" className={`tab-content ${activeTab === 'volunteer' ? 'active' : ''}`}>
         <VolunteerSearch />
       </div>
 

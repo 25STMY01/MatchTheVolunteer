@@ -41,8 +41,9 @@ export function readVolunteerRowsFromLocalVolunteerXlsx(): VolunteerRow[] {
       `Volunteer XLSX not found at ${filePath}. Set VOLUNTEER_XLSX_PATH or add local_data/1. Volunteer Masterlist.xlsx`
     );
   }
-  const workbook = XLSX.readFile(filePath);
-  const sheetName = pickSheetName(workbook.SheetNames);
+  const index = XLSX.readFile(filePath, { bookSheets: true });
+  const sheetName = pickSheetName(index.SheetNames);
+  const workbook = XLSX.readFile(filePath, { sheets: sheetName, sheetRows: 5000 });
   const worksheet = workbook.Sheets[sheetName];
   if (!worksheet) {
     throw new Error(`Sheet "${sheetName}" not found in ${filePath}`);

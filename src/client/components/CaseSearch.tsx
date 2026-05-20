@@ -1,9 +1,15 @@
 import { useState, useEffect } from 'react';
 import { getCasesList } from '../api/case';
-import { getClosestVolunteersForCase } from '../api/volunteer';
+import { getMatchingVolunteersForCase } from '../api/volunteer';
 import { Case, getCaseLabel } from '../../types/case';
 import { ClosestVolunteersResponse } from '../../types/volunteer';
+import { AvailabilityQuery, DAYS, VolunteerFilters } from '../../types/matching';
+import AvailabilitySearch from './AvailabilitySearch';
+import AttributeFilters from './AttributeFilters';
 
+function isFilteredSlot(query: AvailabilityQuery, day: string, slot: string): boolean {
+  return query.filters.some((f) => f.day === day && f.timeSlot === slot);
+}
 
 function CaseSearch() {
   const [cases, setCases] = useState<Case[]>([]);
@@ -13,7 +19,9 @@ function CaseSearch() {
   const [loadingCaseData, setLoadingCaseData] = useState(false);
   const [closestVolunteers, setClosestVolunteers] = useState<ClosestVolunteersResponse>([]);
   const [error, setError] = useState<string | null>(null);
-  
+  const [availabilityFilters, setAvailabilityFilters] = useState<AvailabilityQuery>({ filters: [], mode: 'OR' });
+  const [volunteerFilters, setVolunteerFilters] = useState<VolunteerFilters>({ matchLanguage: false, matchGender: false, matchReligion: false });
+
   useEffect(() => {
     setLoadingCases(true);
     getCasesList()
@@ -42,7 +50,7 @@ function CaseSearch() {
     setClosestVolunteers([]);
     setError(null);
 
-    getClosestVolunteersForCase(selectedCaseId)
+    getMatchingVolunteersForCase(selectedCaseId, availabilityFilters, volunteerFilters)
       .then((result) => {
         setLoadingCaseData(false);
         setClosestVolunteers(result);
@@ -51,7 +59,7 @@ function CaseSearch() {
         setLoadingCaseData(false);
         setError(err.message);
       });
-  }, [selectedCaseId, cases]);
+  }, [selectedCaseId, availabilityFilters, volunteerFilters, cases]);
 
   const renderCaseResult = () => {
     if (error) {
@@ -92,7 +100,7 @@ function CaseSearch() {
             </table>
           </>
         )}
-        <h3>Top 5 Closest Volunteers</h3>
+        <h3>Top 5 Volunteers</h3>
         {!closestVolunteers.length ? (
           <p>No volunteers with valid locations found.</p>
         ) : (
@@ -100,18 +108,37 @@ function CaseSearch() {
             <thead>
               <tr>
                 <th>Code</th>
-                <th>Distance (km)</th>
+                <th>Distance</th>
                 <th>Address</th>
+                <th>Availability</th>
               </tr>
             </thead>
             <tbody>
-              {closestVolunteers.map(({ volunteer: vol, distanceKm }) => (
-                <tr key={vol.code}>
-                  <td><strong>{vol.code}</strong></td>
-                  <td>{distanceKm.toFixed(2)}</td>
-                  <td>{vol.location || 'N/A'}</td>
-                </tr>
-              ))}
+              {closestVolunteers.map(({ volunteer: vol, distanceKm }) => {
+                const availDays = DAYS.filter((day) => vol.availabilities[day]?.length);
+                return (
+                  <tr key={vol.code}>
+                    <td><strong>{vol.code}</strong></td>
+                    <td>{distanceKm > 0 ? `${distanceKm.toFixed(2)} km` : 'N/A'}</td>
+                    <td>{vol.location || 'N/A'}</td>
+                    <td style={{ fontSize: 12 }}>
+                      {availDays.length === 0 ? 'N/A' : availDays.map((day) => (
+                        <div key={day}>
+                          <span>{day.slice(0, 3)}:</span>{' '}
+                          {vol.availabilities[day]!.map((slot, i) => (
+                            <span key={slot}>
+                              {i > 0 && ', '}
+                              {isFilteredSlot(availabilityFilters, day, slot)
+                                ? <strong>{slot}</strong>
+                                : slot}
+                            </span>
+                          ))}
+                        </div>
+                      ))}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -139,6 +166,11 @@ function CaseSearch() {
             </option>
           ))}
         </select>
+      </div>
+      <div className="filters-group">
+        <h4 className="filters-group-heading">Filters</h4>
+        <AvailabilitySearch onSave={setAvailabilityFilters} />
+        <AttributeFilters filters={volunteerFilters} onChange={setVolunteerFilters} selectedCase={selectedCase} />
       </div>
       {loadingCaseData && <div className="loading">Loading...</div>}
       {renderCaseResult()}
