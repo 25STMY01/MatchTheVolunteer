@@ -4,10 +4,10 @@
  * Day columns (Monday–Sunday) are converted to availabilities map.
  */
 
-export type { Availabilities, AvailabilitiesFilter } from './availabilities';
-export { DAYS } from './availabilities';
-import type { Availabilities } from './availabilities';
-import { DAYS } from './availabilities';
+export type { Availabilities, AvailabilitiesFilter } from './matching';
+export { DAYS } from './matching';
+import type { Availabilities } from './matching';
+import { DAYS } from './matching';
 
 /** Maps day name to sheet header search terms (for flexible column matching) */
 export const DAY_HEADER_MAP: Record<(typeof DAYS)[number], string[]> = {

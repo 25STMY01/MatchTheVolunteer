@@ -13,3 +13,10 @@ export interface AvailabilityQuery {
   filters: AvailabilitiesFilter[];
   mode: FilterMode;
 }
+
+/** Optional demographic filters: if a field is true, volunteers must match the case's value for that field. */
+export interface VolunteerFilters {
+  matchLanguage: boolean;
+  matchGender: boolean;
+  matchReligion: boolean;
+}

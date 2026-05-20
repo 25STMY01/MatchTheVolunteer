@@ -1,5 +1,5 @@
 import { Volunteer } from "../../types/volunteer";
-import { AvailabilityQuery } from "../../types/availabilities";
+import { AvailabilityQuery } from "../../types/matching";
 
 export function filterVolunteersByAvailabilities(
   volunteers: Volunteer[],

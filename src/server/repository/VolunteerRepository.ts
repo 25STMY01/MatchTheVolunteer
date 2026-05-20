@@ -1,6 +1,6 @@
 import { CONFIG } from '../config';
 import { DAY_HEADER_MAP, VOLUNTEER_HEADER_MAP, type Volunteer } from '../../types/volunteer';
-import { DAYS, type Availabilities } from '../../types/availabilities';
+import { DAYS, type Availabilities } from '../../types/matching';
 import { safeLog } from '../utils/misc';
 import type { VolunteerRow } from '../../types/sheets';
 import { getValueByHeaderMatch, rowToObject } from './utils';

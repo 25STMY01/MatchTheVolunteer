@@ -3,8 +3,9 @@ import { getCasesList } from '../api/case';
 import { getMatchingVolunteersForCase } from '../api/volunteer';
 import { Case, getCaseLabel } from '../../types/case';
 import { ClosestVolunteersResponse } from '../../types/volunteer';
-import { AvailabilityQuery, DAYS } from '../../types/availabilities';
+import { AvailabilityQuery, DAYS, VolunteerFilters } from '../../types/matching';
 import AvailabilitySearch from './AvailabilitySearch';
+import AttributeFilters from './AttributeFilters';
 
 function isFilteredSlot(query: AvailabilityQuery, day: string, slot: string): boolean {
   return query.filters.some((f) => f.day === day && f.timeSlot === slot);
@@ -19,6 +20,7 @@ function CaseSearch() {
   const [closestVolunteers, setClosestVolunteers] = useState<ClosestVolunteersResponse>([]);
   const [error, setError] = useState<string | null>(null);
   const [availabilityFilters, setAvailabilityFilters] = useState<AvailabilityQuery>({ filters: [], mode: 'OR' });
+  const [volunteerFilters, setVolunteerFilters] = useState<VolunteerFilters>({ matchLanguage: false, matchGender: false, matchReligion: false });
 
   useEffect(() => {
     setLoadingCases(true);
@@ -48,7 +50,7 @@ function CaseSearch() {
     setClosestVolunteers([]);
     setError(null);
 
-    getMatchingVolunteersForCase(selectedCaseId, availabilityFilters)
+    getMatchingVolunteersForCase(selectedCaseId, availabilityFilters, volunteerFilters)
       .then((result) => {
         setLoadingCaseData(false);
         setClosestVolunteers(result);
@@ -57,7 +59,7 @@ function CaseSearch() {
         setLoadingCaseData(false);
         setError(err.message);
       });
-  }, [selectedCaseId, availabilityFilters, cases]);
+  }, [selectedCaseId, availabilityFilters, volunteerFilters, cases]);
 
   const renderCaseResult = () => {
     if (error) {
@@ -98,10 +100,7 @@ function CaseSearch() {
             </table>
           </>
         )}
-        <h3>
-          Top 5 Closest Volunteers
-          {availabilityFilters.filters.length > 0 && <span style={{ fontWeight: 'normal', fontSize: 13, marginLeft: 8, color: '#607d8b' }}>(filtered by availability)</span>}
-        </h3>
+        <h3>Top 5 Volunteers</h3>
         {!closestVolunteers.length ? (
           <p>No volunteers with valid locations found.</p>
         ) : (
@@ -168,7 +167,11 @@ function CaseSearch() {
           ))}
         </select>
       </div>
-      <AvailabilitySearch onSave={setAvailabilityFilters} />
+      <div className="filters-group">
+        <h4 className="filters-group-heading">Filters</h4>
+        <AvailabilitySearch onSave={setAvailabilityFilters} />
+        <AttributeFilters filters={volunteerFilters} onChange={setVolunteerFilters} selectedCase={selectedCase} />
+      </div>
       {loadingCaseData && <div className="loading">Loading...</div>}
       {renderCaseResult()}
     </>

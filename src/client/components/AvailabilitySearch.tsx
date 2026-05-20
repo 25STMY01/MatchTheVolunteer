@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { DAYS } from '../../types/availabilities';
-import type { AvailabilitiesFilter, AvailabilityQuery, FilterMode } from '../../types/availabilities';
+import { DAYS } from '../../types/matching';
+import type { AvailabilitiesFilter, AvailabilityQuery, FilterMode } from '../../types/matching';
 import { getAvailabilitySlots } from '../api/volunteer';
 
 interface Props {
@@ -87,19 +87,19 @@ function AvailabilitySearch({ onSave }: Props) {
   };
 
   return (
-    <div style={{ marginBottom: 12 }}>
+    <div className="filter-section">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
         disabled={loading || !!loadError}
-        style={{ background: '#607d8b', marginBottom: 0 }}
+        className="filter-toggle-btn"
       >
         {getButtonLabel(loading, loadError, open, activeFilters.length)}
       </button>
 
       {open && !loading && !loadError && (
-        <div style={{ border: '1px solid #ddd', borderRadius: 4, padding: 12, marginTop: 8, overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="availability-panel">
+          <table className="availability-table">
             <thead>
               <tr>
                 <th style={{ textAlign: 'left' }}>Day</th>
@@ -138,23 +138,19 @@ function AvailabilitySearch({ onSave }: Props) {
             </tbody>
           </table>
 
-          <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
-            <button type="button" onClick={handleSave} style={{ flex: 1 }}>
+          <div className="availability-actions">
+            <button type="button" onClick={handleSave} className="btn-save">
               Save
             </button>
             <button
               type="button"
               onClick={() => setMode((m: FilterMode) => (m === 'OR' ? 'AND' : 'OR'))}
-              style={{ flex: 0, minWidth: 90, whiteSpace: 'nowrap', background: mode === 'AND' ? '#455a64' : '#78909c' }}
+              className={`btn-mode ${mode === 'AND' ? 'btn-mode--and' : ''}`}
               title={mode === 'OR' ? 'Currently: match any selected slot' : 'Currently: match all selected slots'}
             >
               {mode === 'OR' ? 'Match Any' : 'Match All'}
             </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              style={{ flex: 0, background: '#757575', minWidth: 80 }}
-            >
+            <button type="button" onClick={handleClear} className="btn-clear">
               Clear
             </button>
           </div>
