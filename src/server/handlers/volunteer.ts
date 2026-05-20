@@ -19,6 +19,11 @@ export function searchVolunteerByCode(code: string): Volunteer {
   return volunteer;
 }
 
+export function getVolunteersList(): Volunteer[] {
+  const repository = VolunteerRepository.getVolunteerRepository();
+  return repository.getAll();
+}
+
 const DEFAULT_VOLUNTEER_FILTERS: VolunteerFilters = {
   matchLanguage: false,
   matchGender: false,
