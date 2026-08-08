@@ -306,3 +306,126 @@ tr:nth-child(even) {
 .btn-clear:hover {
   background: #757575;
 }
+
+/* ── Filter Panel (Languages, Gender, Religion) ────────────── */
+
+.filter-panel {
+  margin-top: 12px;
+}
+
+.filter-panel .filter-section {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.filter-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.filter-section-header:hover {
+  background-color: #f5f5f5;
+}
+
+.filter-section-header.open {
+  background-color: #f0f8f0;
+  border-bottom: 2px solid #10b981;
+}
+
+.filter-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-section-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 12px;
+  color: #666;
+}
+
+.filter-section-content {
+  display: none;
+  padding: 12px 16px;
+  background-color: #fff;
+}
+
+.filter-section.open .filter-section-content {
+  display: block;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.filter-option input[type='checkbox'] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: auto;
+}
+
+.filter-option label {
+  cursor: pointer;
+  margin: 0;
+  text-transform: capitalize;
+  font-weight: normal;
+  display: inline;
+}
+
+.filter-clear-btn {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 8px;
+  width: auto;
+}
+
+.filter-clear-btn:hover {
+  background-color: #e8e8e8;
+  color: #333;
+}
+
+.filter-apply-btn {
+  background-color: #10b981;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 12px;
+  transition: background-color 0.2s;
+}
+
+.filter-apply-btn:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.filter-apply-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
