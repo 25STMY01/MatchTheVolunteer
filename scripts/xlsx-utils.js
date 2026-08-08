@@ -17,7 +17,9 @@ const defaultCase = join(rootDir, 'local_data', 'Case Masterlist.xlsx');
 export const paths = {
   volunteer: process.env.VOLUNTEER_XLSX_PATH || defaultVolunteer,
   case: process.env.CASE_XLSX_PATH || defaultCase,
-  sheetsTs: join(rootDir, 'src', 'server', 'types', 'sheets.ts'),
+  // sheetsTs: join(rootDir, 'src', 'server', 'types', 'sheets.ts'),
+  // fix the path to match new location of sheets.ts after Sai refactoring
+  sheetsTs: join(rootDir, 'src', 'types', 'sheets.ts'),
 };
 
 export function findHeaderRowIndex(data, identifierColumns = ['Code Number', 'SN']) {
