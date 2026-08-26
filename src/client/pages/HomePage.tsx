@@ -2,6 +2,7 @@ import { useState } from 'react';
 import VolunteerSearch from '../components/VolunteerSearch';
 import CaseSearch from '../components/CaseSearch';
 import VolunteerTagFilter from '../components/VolunteerTagFilter';
+import DarkModeToggle from '../components/DarkModeToggle';
 
 type Tab = 'volunteer' | 'case' | 'tags';
 
@@ -10,7 +11,10 @@ function HomePage() {
 
   return (
     <div className="container">
-      <h2>Volunteer & Case Lookup</h2>
+      <header className="app-header">
+        <h2>Volunteer &amp; Case Lookup</h2>
+        <DarkModeToggle />
+      </header>
 
       <div className="tabs">
         <button

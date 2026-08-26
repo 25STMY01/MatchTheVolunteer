@@ -22,4 +22,13 @@ export const CONFIG = {
     getScriptProperty('VOLUNTEER_SHEET_NAME') ?? 'Volunteer Masterlist',
   CASE_SHEET_NAME: getScriptProperty('CASE_SHEET_NAME') ?? 'Cases',
   GOOGLE_MAPS_API_KEY_PROPERTY: 'GOOGLE_MAPS_API_KEY',
+  ONEMAP_API_TOKEN_PROPERTY: 'ONEMAP_API_TOKEN',
+  ONEMAP_API_TOKEN:
+    getScriptProperty('ONEMAP_API_TOKEN') ||
+    getScriptProperty('ONEMAP_TOKEN') ||
+    '',
+  ONEMAP_EMAIL_PROPERTY: 'ONEMAP_EMAIL',
+  ONEMAP_EMAIL: getScriptProperty('ONEMAP_EMAIL') || '',
+  ONEMAP_PASSWORD_PROPERTY: 'ONEMAP_PASSWORD',
+  ONEMAP_PASSWORD: getScriptProperty('ONEMAP_PASSWORD') || '',
 };

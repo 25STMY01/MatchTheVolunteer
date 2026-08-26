@@ -114,7 +114,9 @@ export const VOLUNTEER_HEADER_MAP: Record<keyof Omit<Volunteer, 'availabilities'
 
 export interface VolunteerWithDistance {
   volunteer: Volunteer;
-  distanceKm: number;
+  travelTimeMinutes?: number | null;
+  distanceKm?: number;
 }
 
 export type ClosestVolunteersResponse = VolunteerWithDistance[];
+

@@ -61,7 +61,7 @@ function VolunteerTagFilter() {
   return (
     <>
       <h3>Filter Volunteers by Tags</h3>
-      <p style={{ marginTop: 0, color: '#666' }}>
+      <p className="muted-text" style={{ marginTop: 0 }}>
         Tags are parsed from "Please share with your interests, hobbies, talents or professions..."
         using comma-separated values.
       </p>

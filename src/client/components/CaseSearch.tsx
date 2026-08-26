@@ -171,7 +171,7 @@ function CaseSearch() {
               <td>
                 <strong>Case Closed Date:</strong>
               </td>
-              <td style={{ color: isCaseClosed ? '#666' : '#10b981' }}>
+              <td style={{ color: isCaseClosed ? 'var(--text-muted)' : 'var(--primary)' }}>
                 {isCaseClosed ? selectedCase.closedDate : 'N/A'}
               </td>
             </tr>
@@ -192,13 +192,13 @@ function CaseSearch() {
             <thead>
               <tr>
                 <th>Code</th>
-                <th>Distance</th>
+                <th>Travel Time</th>
                 <th>Address</th>
                 <th>Availability</th>
               </tr>
             </thead>
             <tbody>
-              {closestVolunteers.map(({ volunteer: vol, distanceKm }) => {
+              {closestVolunteers.map(({ volunteer: vol, travelTimeMinutes, distanceKm }) => {
                 const availDays = DAYS.filter(
                   (day) => vol.availabilities[day]?.length
                 );
@@ -208,9 +208,15 @@ function CaseSearch() {
                       <strong>{vol.code}</strong>
                     </td>
                     <td>
-                      {distanceKm > 0 ? `${distanceKm.toFixed(2)} km` : 'N/A'}
+                      {travelTimeMinutes != null && travelTimeMinutes >= 0
+                        ? travelTimeMinutes >= 60
+                          ? `${Math.floor(travelTimeMinutes / 60)}h ${travelTimeMinutes % 60}m`
+                          : `${travelTimeMinutes} mins`
+                        : distanceKm && distanceKm > 0
+                        ? `${distanceKm.toFixed(2)} km`
+                        : 'N/A'}
                     </td>
-                    <td>{vol.location || 'N/A'}</td>
+                    <td>{vol.area || vol.location || 'N/A'}</td>
                     <td style={{ fontSize: 12 }}>
                       {availDays.length === 0
                         ? 'N/A'
