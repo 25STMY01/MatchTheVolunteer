@@ -10,6 +10,10 @@
   "scripts": {
     "postinstall": "patch-package",
     "generate-types": "node scripts/generate-types-from-xlsx.js",
+    "debug:volunteer": "node scripts/debug_scripts/inspect-volunteer-data.mjs",
+    "debug:case": "node scripts/debug_scripts/inspect-case-data.mjs",
+    "debug:repo": "node scripts/debug_scripts/test-repository-parsing.mjs",
+    "debug:api": "tsx scripts/debug_scripts/test-api-handlers.mjs",
     "dev": "concurrently -k \"tsx watch --include src/server --include src/types dev/local-api-server.ts\" \"vite\"",
     "dev:server": "tsx watch --include src/server --include src/types dev/local-api-server.ts",
     "lint": "eslint .",

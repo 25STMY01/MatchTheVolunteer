@@ -140,7 +140,7 @@ function AvailabilitySearch({ onSave }: Props) {
 
           <div className="availability-actions">
             <button type="button" onClick={handleSave} className="btn-save">
-              Save
+              Apply
             </button>
             <button
               type="button"

@@ -1,5 +1,5 @@
 // AUTO-GENERATED from local .xlsx (yarn generate-types) - do not edit manually
-// Generated: 2026-02-23T12:47:10.352Z
+// Generated: 2026-08-08T16:16:52.956Z
 // Run: yarn generate-types
 
 /** Base type for sheet row data - all row types extend this */
@@ -20,6 +20,7 @@ export interface VolunteerRow extends Row {
   '1. Salutation 称呼'?: string | number;
   '2. Given Name 名字'?: string | number;
   '3. Last Name 姓氏'?: string | number;
+  '3a. Chinese Name 中文姓名 (If relevant)'?: string | number;
   '4. Email 电邮'?: string | number;
   '5. Date of Birth'?: string | number;
   '6. Contact number 联络号码'?: string | number;
@@ -53,6 +54,23 @@ export interface VolunteerRow extends Row {
   'By providing my details, I understand that TCN may use my details for record and reference purposes. If there is no suitable match to a volunteer opportunity, I consent to TCN storing my application for a future opportunity, and to contact me when a relevant opportunity arises. I shall release and not hold or any of TCN employees, servants or agents liable in any way whatsoever for any loss, bodily injury, mishap, accident and/or loss of life or property arising directly or indirectly as a result of or in connection with my voluntary participation. To indemnify and defend against all claims, causes of actions, damages, judgements, costs and expenses including legal expenses which may arise from my presence in the activities. 通过提供我的个人资料，我明白 TCN 可能会将我的资料备档和作为参考用途。 如果没有适合我的参与活动机会，我同意 TCN 保存我的申请以备将来有相关机会时联系我。 我将解除对 TCN 及其雇员、员工或代理人的一切责任，不以任何方式对于因我自愿参与而直接或间接导致的任何损失、身体伤害、意外事故、生命或财产损失负责。 我不会对所有因我的参与活动而产生的索赔、诉因、损害赔偿、判决、费用和包括法律费用在内的开支，进行赔偿和辩护。'?: string | number;
   'MAILING LIST 通讯录'?: string | number;
   'How did you find out about us? 你是怎么认识我们？'?: string | number;
+  'DO NOT DELETE EMPTY/HIDE COLUMNS'?: string | number;
+  Column48?: string | number;
+  Column49?: string | number;
+  Column50?: string | number;
+  Column51?: string | number;
+  Column52?: string | number;
+  Column53?: string | number;
+  Column54?: string | number;
+  'I have driving licence and have a vehicle'?: string | number;
+  'I play a musical instrument'?: string | number;
+  'I can sew with a sewing machine'?: string | number;
+  'I have formal counselling training'?: string | number;
+  'I have formal nursing/caregiving training'?: string | number;
+  'I can do simple hand, head to shoulder massage'?: string | number;
+  'I have experience using arts and crafts for patient engagement'?: string | number;
+  'HR, Admin and/or Finance related skillsets (corporate functions) are familiar to me'?: string | number;
+  'I can contribute to TCN\'s social media content and/or management'?: string | number;
 }
 
 export interface CaseRow extends Row {

@@ -160,4 +160,37 @@ export class VolunteerRepository {
     }
     return Array.from(seen);
   }
+
+  getUniqueGenders(): string[] {
+    const seen = new Set<string>();
+    for (const vol of this.getAll()) {
+      const gender = (vol.gender || '').trim().toLowerCase();
+      if (gender) {
+        seen.add(gender);
+      }
+    }
+    return Array.from(seen).sort();
+  }
+
+  getUniqueReligions(): string[] {
+    const seen = new Set<string>();
+    for (const vol of this.getAll()) {
+      const religion = (vol.religion || '').trim().toLowerCase();
+      if (religion) {
+        seen.add(religion);
+      }
+    }
+    return Array.from(seen).sort();
+  }
+
+  getUniqueLanguages(): string[] {
+    const seen = new Set<string>();
+    for (const vol of this.getAll()) {
+      if (vol.spokenLanguages) {
+        const languages = vol.spokenLanguages.split(/[,/]+/).map((l) => l.trim().toLowerCase()).filter(Boolean);
+        languages.forEach((lang) => seen.add(lang));
+      }
+    }
+    return Array.from(seen).sort();
+  }
 }

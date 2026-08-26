@@ -14,9 +14,9 @@ export interface AvailabilityQuery {
   mode: FilterMode;
 }
 
-/** Optional demographic filters: if a field is true, volunteers must match the case's value for that field. */
+/** Demographic filters: arrays of selected options. Empty array means filter not applied. */
 export interface VolunteerFilters {
-  matchLanguage: boolean;
-  matchGender: boolean;
-  matchReligion: boolean;
+  selectedLanguages: string[];
+  selectedGenders: string[];
+  selectedReligions: string[];
 }

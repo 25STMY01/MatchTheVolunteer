@@ -10,6 +10,18 @@ export function getAvailabilitySlots(): string[] {
   return VolunteerRepository.getVolunteerRepository().getAvailabilitySlots();
 }
 
+export function getAvailableGenders(): string[] {
+  return VolunteerRepository.getVolunteerRepository().getUniqueGenders();
+}
+
+export function getAvailableReligions(): string[] {
+  return VolunteerRepository.getVolunteerRepository().getUniqueReligions();
+}
+
+export function getAvailableLanguages(): string[] {
+  return VolunteerRepository.getVolunteerRepository().getUniqueLanguages();
+}
+
 export function searchVolunteerByCode(code: string): Volunteer {
   const repository = VolunteerRepository.getVolunteerRepository();
   const volunteer = repository.findByCode(code);
@@ -25,9 +37,9 @@ export function getVolunteersList(): Volunteer[] {
 }
 
 const DEFAULT_VOLUNTEER_FILTERS: VolunteerFilters = {
-  matchLanguage: false,
-  matchGender: false,
-  matchReligion: false,
+  selectedLanguages: [],
+  selectedGenders: [],
+  selectedReligions: [],
 };
 
 export async function getMatchingVolunteersForCase(
@@ -52,7 +64,7 @@ export async function getMatchingVolunteersForCase(
       availabilityFilters
     );
 
-    volunteers = filterVolunteersByAttributes(volunteers, volunteerFilters, caseObj);
+    volunteers = filterVolunteersByAttributes(volunteers, volunteerFilters);
 
     return findClosestVolunteers(caseObj, volunteers, k);
   } catch (error) {
